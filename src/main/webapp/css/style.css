@@ -435,9 +435,17 @@ a { color: #175cd3; }
 .read-only-field { margin: 1rem 0 0; color: #475467; }
 .read-only-field span { margin-left: .4rem; padding: .2rem .45rem; border-radius: 999px; background: #eaecf0; font-size: .78rem; }
 .product-save-button { justify-self: start; min-width: 180px; }
-.pagination { display: flex; flex-wrap: wrap; justify-content: center; gap: .35rem; margin-top: 2rem; }
-.pagination a, .pagination span { min-width: 2.25rem; padding: .55rem .7rem; text-align: center; border: 1px solid #d0d5dd; border-radius: .4rem; background: #fff; text-decoration: none; }
+.pagination { display: flex; flex-wrap: wrap; justify-content: center; gap: .35rem; max-width: 100%; margin-top: 2rem; }
+.pagination a, .pagination span { display: inline-flex; align-items: center; justify-content: center; min-width: 2.25rem; min-height: 2.4rem; padding: .55rem .7rem; text-align: center; border: 1px solid #d0d5dd; border-radius: .4rem; background: #fff; text-decoration: none; }
+.pagination a:hover, .pagination a:focus-visible { border-color: #175cd3; background: #f0f6ff; }
+.pagination .pagination-direction { min-width: auto; white-space: nowrap; }
 .pagination .current { color: #fff; border-color: #175cd3; background: #175cd3; }
+
+@media (max-width: 520px) {
+    .pagination { gap: .25rem; }
+    .pagination a, .pagination span { min-width: 2rem; min-height: 2.25rem; padding: .45rem .55rem; font-size: .9rem; }
+    .pagination .pagination-direction { flex-basis: auto; }
+}
 .notifications-page { max-width: 900px; }
 .notification-history { overflow: hidden; background: #fff; border: 1px solid #dce3ec; border-radius: .8rem; box-shadow: 0 .25rem 1rem rgba(36,48,71,.06); }
 .notification-history-item { display: grid; grid-template-columns: 12px minmax(0,1fr); gap: .75rem; padding: 1.1rem 1.25rem; color: #243047; border-bottom: 1px solid #edf1f6; text-decoration: none; }

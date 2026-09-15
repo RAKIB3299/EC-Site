@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Products | NEXORA</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css?v=23">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css?v=24">
 </head>
 <body class="products-page">
 <jsp:include page="/WEB-INF/views/includes/navigation.jsp" />
@@ -104,16 +104,43 @@
         </c:otherwise>
     </c:choose>
 
-    <c:if test="${totalProducts > 0}"><nav class="pagination" aria-label="Product pages">
-        <c:if test="${currentPage > 1}"><a href="?page=${currentPage - 1}${filterQuery}">Previous</a></c:if>
-        <c:forEach begin="1" end="${totalPages}" var="pageNumber">
-            <c:choose>
-                <c:when test="${pageNumber == currentPage}"><span class="current" aria-current="page">${pageNumber}</span></c:when>
-                <c:otherwise><a href="?page=${pageNumber}${filterQuery}">${pageNumber}</a></c:otherwise>
-            </c:choose>
-        </c:forEach>
-        <c:if test="${currentPage < totalPages}"><a href="?page=${currentPage + 1}${filterQuery}">Next</a></c:if>
-    </nav></c:if>
+    <c:if test="${totalProducts > 0}">
+        <%-- 現在ページの前2件・後3件を基本に、最大6ページの範囲を作ります。 --%>
+        <c:set var="pageWindowSize" value="6" />
+        <c:set var="firstVisiblePage" value="${currentPage - 2}" />
+        <c:if test="${firstVisiblePage < 1}">
+            <c:set var="firstVisiblePage" value="1" />
+        </c:if>
+        <c:if test="${firstVisiblePage + pageWindowSize - 1 > totalPages}">
+            <c:set var="firstVisiblePage" value="${totalPages - pageWindowSize + 1}" />
+        </c:if>
+        <c:if test="${firstVisiblePage < 1}">
+            <c:set var="firstVisiblePage" value="1" />
+        </c:if>
+        <c:set var="lastVisiblePage" value="${firstVisiblePage + pageWindowSize - 1}" />
+        <c:if test="${lastVisiblePage > totalPages}">
+            <c:set var="lastVisiblePage" value="${totalPages}" />
+        </c:if>
+
+        <nav class="pagination" aria-label="Product pages">
+            <c:if test="${currentPage > 1}">
+                <a class="pagination-direction" href="?page=${currentPage - 1}${filterQuery}" rel="prev" aria-label="Previous product page">&lt; Prev</a>
+            </c:if>
+            <c:forEach begin="${firstVisiblePage}" end="${lastVisiblePage}" var="pageNumber">
+                <c:choose>
+                    <c:when test="${pageNumber == currentPage}">
+                        <span class="current" aria-current="page">${pageNumber}</span>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="?page=${pageNumber}${filterQuery}" aria-label="Go to product page ${pageNumber}">${pageNumber}</a>
+                    </c:otherwise>
+                </c:choose>
+            </c:forEach>
+            <c:if test="${currentPage < totalPages}">
+                <a class="pagination-direction" href="?page=${currentPage + 1}${filterQuery}" rel="next" aria-label="Next product page">Next &gt;</a>
+            </c:if>
+        </nav>
+    </c:if>
 </main>
 <c:if test="${not empty banners and banners.size() > 1}"><script>(function(){const root=document.querySelector('[data-banner-carousel]'),slides=[...root.querySelectorAll('.banner-slide')],dots=[...root.querySelectorAll('.banner-dot')];let current=0,timer;function show(index){current=(index+slides.length)%slides.length;slides.forEach((slide,i)=>{slide.classList.toggle('active',i===current);slide.setAttribute('aria-hidden',i!==current)});dots.forEach((dot,i)=>{dot.classList.toggle('active',i===current);dot.setAttribute('aria-pressed',i===current)});}function start(){clearInterval(timer);timer=setInterval(()=>show(current+1),5000);}root.querySelectorAll('[data-banner-change]').forEach(button=>button.addEventListener('click',()=>{show(current+Number(button.dataset.bannerChange));start()}));dots.forEach((dot,i)=>dot.addEventListener('click',()=>{show(i);start()}));root.addEventListener('mouseenter',()=>clearInterval(timer));root.addEventListener('mouseleave',start);start();})();</script></c:if>
 </body>

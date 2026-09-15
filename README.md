@@ -1,23 +1,37 @@
-# EC Site starter
+# EC Site
 
-This is a minimal Java Servlet/JSP web application structure. It does not yet
-contain e-commerce features or a database implementation.
+A simple e-commerce web application developed using Java, JSP/Servlet, and Oracle Database.
 
-## Requirements
+## Main Features
 
-- JDK 17
+- User registration and login
+- Product list and product details
+- Shopping cart
+- Order management
+- Order history
+- Admin functions
+- Notification system
+
+## Technologies
+
+- Java
+- JSP / Servlet
+- HTML / CSS / JavaScript
+- Oracle Database
+- JDBC
 - Maven
 - Apache Tomcat 10.1
 
-## Build
+## Project Structure
 
-Run `mvn clean package`. Maven creates `target/ec-site.war`, which can be
-deployed to Tomcat.
+- `src/main/java` – Java source code
+- `src/main/webapp` – JSP, CSS and JavaScript
+- `WEB-INF/views` – JSP pages
+- `database.sql` – Database SQL
+- `pom.xml` – Maven configuration
 
-## Main locations
+## About This Project
 
-- `src/main/java`: Java source code
-- `src/main/resources`: application configuration
-- `src/main/webapp`: JSP, HTML, CSS, and other web files
-- `src/main/webapp/WEB-INF/views`: JSP pages that should be opened by Servlets
-- `database.sql`: database schema and starter data (currently empty)
+This project was developed to practice Java web development and database integration.
+
+Through this project, I learned how to use Java Servlet, JSP, JDBC, Oracle Database, and MVC architecture to build a practical web application.

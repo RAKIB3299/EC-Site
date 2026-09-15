@@ -21,8 +21,22 @@ public class AdminCategoryServlet extends HttpServlet {
      * <p>日本語メソッド説明: 引数は呼び出し元で準備された値を使用し、処理結果または例外を呼び出し元へ返します。</p>
      */
     protected void doGet(HttpServletRequest request,HttpServletResponse response) throws ServletException,IOException {
-        try { request.setAttribute("categories",categoryDAO.findAll()); request.getRequestDispatcher("/WEB-INF/views/admin/categories.jsp").forward(request,response); }
-        catch(SQLException e){getServletContext().log("Category list failed",e);response.sendError(500,"Categories could not be loaded.");}
+        try {
+            request.setAttribute("categories", categoryDAO.findAll());
+        } catch (SQLException e) {
+            getServletContext().log("Category list failed", e);
+            response.sendError(500, "Categories could not be loaded.");
+            return;
+        }
+
+        // 統計は補助情報なので、失敗してもカテゴリ編集画面は利用可能にします。
+        try {
+            request.setAttribute("categoryOverview", categoryDAO.findOverview());
+        } catch (SQLException e) {
+            getServletContext().log("Category overview statistics failed", e);
+            request.setAttribute("statisticsUnavailable", true);
+        }
+        request.getRequestDispatcher("/WEB-INF/views/admin/categories.jsp").forward(request,response);
     }
     /**
      * POSTリクエストの入力値を検証し、更新処理後に安全な画面へ遷移します。

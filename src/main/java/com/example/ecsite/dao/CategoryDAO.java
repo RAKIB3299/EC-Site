@@ -1,6 +1,7 @@
 package com.example.ecsite.dao;
 
 import com.example.ecsite.model.Category;
+import com.example.ecsite.model.CategoryOverview;
 import com.example.ecsite.util.DBConnection;
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,6 +13,16 @@ import java.util.List;
  * <p>SQLはPreparedStatementで実行し、try-with-resourcesによってJDBCリソースを確実に解放します。</p>
  */
 public class CategoryDAO {
+    private static final String OVERVIEW_SQL = """
+            SELECT
+                (SELECT COUNT(*) FROM ec_categories) AS total_categories,
+                (SELECT COUNT(*) FROM ec_categories WHERE is_active = 'Y') AS active_categories,
+                (SELECT COUNT(*) FROM ec_categories WHERE is_active <> 'Y' OR is_active IS NULL) AS inactive_categories,
+                (SELECT COUNT(*) FROM products) AS total_products,
+                (SELECT COUNT(*) FROM products WHERE category_id IS NULL) AS uncategorized_products
+            FROM dual
+            """;
+
     /**
      * 指定条件をPreparedStatementへ設定し、Oracleデータベースから必要な情報を取得します。
      *
@@ -43,6 +54,28 @@ public class CategoryDAO {
     public List<Category> findAll() throws SQLException {
         // LEFT JOINにより商品が0件のカテゴリも残し、COUNTで所属商品数を取得します。
         return query("SELECT c.category_id, c.category_name, c.display_order, c.is_active, COUNT(p.prod_id) product_count FROM ec_categories c LEFT JOIN products p ON p.category_id=c.category_id GROUP BY c.category_id,c.category_name,c.display_order,c.is_active ORDER BY c.display_order NULLS LAST,c.category_id");
+    }
+
+    /**
+     * 商品をJavaへ読み込まず、Oracle上で概要パネル用の件数を集計します。
+     *
+     * @return カテゴリと商品の集計値
+     * @throws SQLException 集計SQLの実行に失敗した場合
+     */
+    public CategoryOverview findOverview() throws SQLException {
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(OVERVIEW_SQL);
+             ResultSet resultSet = statement.executeQuery()) {
+            if (!resultSet.next()) {
+                throw new SQLException("Category overview query returned no row.");
+            }
+            return new CategoryOverview(
+                    resultSet.getInt(1),
+                    resultSet.getInt(2),
+                    resultSet.getInt(3),
+                    resultSet.getInt(4),
+                    resultSet.getInt(5));
+        }
     }
     /**
      * 対象を限定する条件を付け、他の利用者のデータへ影響しないように更新します。

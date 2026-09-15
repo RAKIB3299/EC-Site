@@ -1,0 +1,10 @@
+# Oracle Database configuration example using a SID-style JDBC URL.
+# Copy this file to database.properties and enter your own values.
+# Do not commit database.properties because it contains a real password.
+db.url=jdbc:oracle:thin:@localhost:1521:orcl
+db.user=your_oracle_username
+db.password=your_oracle_password
+
+# Persistent product-image files live outside the deployed Tomcat WAR.
+product.upload.directory=C:/EC-Site/uploads/products
+banner.upload.directory=C:/EC-Site/uploads/banners

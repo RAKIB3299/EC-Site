@@ -1,0 +1,9 @@
+target/
+uploads/
+.tools/
+.m2/
+.idea/
+.vscode/
+*.iml
+src/main/resources/database.properties
+src/main/resources/email.properties
